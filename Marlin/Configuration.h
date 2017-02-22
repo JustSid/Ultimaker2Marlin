@@ -73,6 +73,10 @@
 
 #define POWER_SUPPLY 2
 
+#ifndef HAS_E3D_UPGRADE_KIT
+#define HAS_E3D_UPGRADE_KIT 1
+#endif
+
 
 //===========================================================================
 //============================== Delta Settings =============================
@@ -170,8 +174,13 @@
 
 //Check if the heater heats up MAX_HEATING_TEMPERATURE_INCREASE within MAX_HEATING_CHECK_MILLIS while the PID was at the maximum.
 // If not, raise an error because most likely the heater is not heating up the temperature sensor. Indicating an issue in the system.
-#define MAX_HEATING_TEMPERATURE_INCREASE 10
-#define MAX_HEATING_CHECK_MILLIS (30 * 1000)
+#if HAS_E3D_UPGRADE_KIT == 0
+  #define MAX_HEATING_TEMPERATURE_INCREASE 10
+  #define MAX_HEATING_CHECK_MILLIS (30 * 1000)
+#else
+  #define MAX_HEATING_TEMPERATURE_INCREASE 0.1
+  #define MAX_HEATING_CHECK_MILLIS (90000)
+#endif
 
 // If your bed has low resistance e.g. .6 ohm and throws the fuse you can duty cycle it to reduce the
 // average current. The value should be an integer and the heat bed will be turned on for 1 interval of
@@ -198,10 +207,17 @@
     //#define  DEFAULT_Ki 1.08
     //#define  DEFAULT_Kd 114
 
+#if HAS_E3D_UPGRADE_KIT == 0
 // Ultimaker2
     #define  DEFAULT_Kp 10.0
     #define  DEFAULT_Ki 2.5
     #define  DEFAULT_Kd 100.0
+#else
+// Ultimaker2 with E3D hot end
+    #define  DEFAULT_Kp 36.59
+    #define  DEFAULT_Ki 3.65
+    #define  DEFAULT_Kd 91.72
+#endif
 
 // Makergear
 //    #define  DEFAULT_Kp 7.0
@@ -335,12 +351,22 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define min_software_endstops true // If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true  // If true, axis won't move to coordinates greater than the defined lengths below.
 // Travel limits after homing
-#define X_MAX_POS 230
-#define X_MIN_POS 0
-#define Y_MAX_POS 224.5
-#define Y_MIN_POS 0
-#define Z_MAX_POS 230
-#define Z_MIN_POS 0
+
+#if HAS_E3D_UPGRADE_KIT == 0
+  #define X_MAX_POS 230
+  #define X_MIN_POS 0
+  #define Y_MAX_POS 224.5
+  #define Y_MIN_POS 0
+  #define Z_MAX_POS 230
+  #define Z_MIN_POS 0
+#else
+  #define X_MAX_POS 215
+  #define X_MIN_POS 0
+  #define Y_MAX_POS 210
+  #define Y_MIN_POS 0
+  #define Z_MAX_POS 230
+  #define Z_MIN_POS 0
+#endif
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
 #define Y_MAX_LENGTH (Y_MAX_POS - Y_MIN_POS)
@@ -363,9 +389,15 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80.0,80.0,200,282}  // default steps per unit for ultimaker2
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 40, 45}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#if HAS_E3D_UPGRADE_KIT == 0
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {80.0,80.0,200,282}  // default steps per unit for ultimaker2
+  #define DEFAULT_MAX_FEEDRATE          {300, 300, 40, 45}    // (mm/sec)
+  #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {80.0,80.0,200,837}  // default steps per unit for ultimaker2
+  #define DEFAULT_MAX_FEEDRATE          {300, 300, 40, 20}    // (mm/sec)
+  #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,3000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#endif
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for retracts

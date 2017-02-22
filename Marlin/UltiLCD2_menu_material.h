@@ -16,14 +16,25 @@ struct materialSettings
 
 extern struct materialSettings material[EXTRUDERS];
 
-#define FILAMENT_REVERSAL_LENGTH      (FILAMANT_BOWDEN_LENGTH + 50)
-#define FILAMENT_REVERSAL_SPEED       100
-#define FILAMENT_LONG_MOVE_ACCELERATION 30
+#if HAS_E3D_UPGRADE_KIT == 0
+  #define FILAMENT_REVERSAL_LENGTH      (FILAMANT_BOWDEN_LENGTH + 50)
+  #define FILAMENT_REVERSAL_SPEED       100
+  #define FILAMENT_LONG_MOVE_ACCELERATION 30
 
-#define FILAMENT_FORWARD_LENGTH       (FILAMANT_BOWDEN_LENGTH - 50)
-#define FILAMENT_INSERT_SPEED         2     //Initial insert speed to grab the filament.
-#define FILAMENT_INSERT_FAST_SPEED    100   //Speed during the forward length
-#define FILAMENT_INSERT_EXTRUDE_SPEED 2     //Final speed when extruding
+  #define FILAMENT_FORWARD_LENGTH       (FILAMANT_BOWDEN_LENGTH - 50)
+  #define FILAMENT_INSERT_SPEED         2     //Initial insert speed to grab the filament.
+  #define FILAMENT_INSERT_FAST_SPEED    100   //Speed during the forward length
+  #define FILAMENT_INSERT_EXTRUDE_SPEED 2     //Final speed when extruding
+#else
+  #define FILAMENT_REVERSAL_LENGTH      (FILAMANT_BOWDEN_LENGTH + 150)
+  #define FILAMENT_REVERSAL_SPEED       75
+  #define FILAMENT_LONG_MOVE_ACCELERATION 30
+
+  #define FILAMENT_FORWARD_LENGTH       (FILAMANT_BOWDEN_LENGTH - 50)
+  #define FILAMENT_INSERT_SPEED         2     //Initial insert speed to grab the filament.
+  #define FILAMENT_INSERT_FAST_SPEED    75   //Speed during the forward length
+  #define FILAMENT_INSERT_EXTRUDE_SPEED 2     //Final speed when extruding
+#endif
 
 #define EEPROM_MATERIAL_SETTINGS_OFFSET 0x800
 #define EEPROM_MATERIAL_EXTRA_TEMPERATURES_OFFSET 0xa00
